@@ -17,7 +17,7 @@ const MyBookings = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/bookings/user/${userId}`, {
+  const response = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/bookings/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setBookings(response.data);
@@ -38,7 +38,7 @@ const MyBookings = () => {
     }
     if (!window.confirm('Are you sure you want to cancel this booking?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`, {
+  await axios.delete(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/bookings/${bookingId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessage('Booking cancelled.');

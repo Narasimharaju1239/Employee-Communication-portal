@@ -6,7 +6,7 @@ const PollResults = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/polls/all")
+  .get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/all`)
       .then((res) => setPolls(res.data));
   }, []);
 

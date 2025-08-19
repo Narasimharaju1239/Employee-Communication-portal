@@ -18,7 +18,7 @@ const SuperAdminCalendar = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/calendar/all');
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/all`);
       setEvents(res.data);
     } catch {
       toast.error('❌ Error loading calendar events');
@@ -30,14 +30,14 @@ const SuperAdminCalendar = () => {
     const createdBy = localStorage.getItem('userId');
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/calendar/update/${editingId}`, {
+  await axios.put(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/update/${editingId}`, {
           title,
           description: desc,
           date: value,
         });
         toast.success('✅ Event updated!');
       } else {
-        await axios.post('http://localhost:5000/api/calendar/create', {
+  await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/create`, {
           title,
           description: desc,
           date: value,
@@ -64,7 +64,7 @@ const SuperAdminCalendar = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this event?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/calendar/delete/${id}`);
+  await axios.delete(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/delete/${id}`);
       toast.error('🗑️ Event deleted');
       fetchEvents();
     } catch {

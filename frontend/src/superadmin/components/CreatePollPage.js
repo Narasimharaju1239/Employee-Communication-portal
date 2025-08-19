@@ -15,7 +15,7 @@ const CreatePollPage = () => {
 
   const fetchPolls = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/polls/all');
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/all`);
       setPolls(res.data);
     } catch {
       setPolls([]);
@@ -53,7 +53,7 @@ const CreatePollPage = () => {
     try {
       if (editingId) {
         await axios.put(
-          `http://localhost:5000/api/polls/${editingId}`,
+          `${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/${editingId}`,
           {
             question,
             options: options.filter(opt => opt.trim() !== ''),
@@ -65,7 +65,7 @@ const CreatePollPage = () => {
         setEditingId(null);
       } else {
         await axios.post(
-          'http://localhost:5000/api/polls/create',
+          `${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/create`,
           {
             question,
             options: options.filter(opt => opt.trim() !== ''),
@@ -93,7 +93,7 @@ const CreatePollPage = () => {
     };
     if (!window.confirm('Are you sure you want to delete this poll?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/polls/${id}`, {
+  await axios.delete(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/${id}`, {
         headers
       });
       toast.error('Poll deleted successfully!');

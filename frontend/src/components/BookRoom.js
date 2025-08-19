@@ -28,7 +28,7 @@ const BookRoom = () => {
 
   const fetchRooms = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/rooms', {
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/rooms`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRooms(res.data);
@@ -41,7 +41,7 @@ const BookRoom = () => {
 
   const fetchBookings = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/bookings', {
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/bookings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setBookings(res.data);
@@ -114,7 +114,7 @@ const BookRoom = () => {
 
     setIsLoading(true); // Start loading
     try {
-      await axios.post('http://localhost:5000/api/bookings', {
+  await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/bookings`, {
         room: selectedRoom,
         date: selectedDate,
         time: selectedTime
@@ -331,7 +331,7 @@ const BookRoom = () => {
                   onClick={async () => {
                     if (!window.confirm('Are you sure you want to cancel this booking?')) return;
                     try {
-                      await axios.delete(`http://localhost:5000/api/bookings/${booking._id}`, {
+                      await axios.delete(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/bookings/${booking._id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                       });
                       toast.error('🗑️ Booking cancelled');

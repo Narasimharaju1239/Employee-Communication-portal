@@ -5,7 +5,7 @@ const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/announcements/view')
+  axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/announcements/view`)
       .then((res) => setAnnouncements(res.data))
       .catch((err) => console.error(err));
   }, []);

@@ -14,7 +14,7 @@ const ViewPollsPage = () => {
   const fetchPolls = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/polls/all');
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/all`);
       setPolls(res.data);
     } catch {
       setPolls([]);
@@ -38,7 +38,7 @@ const ViewPollsPage = () => {
     setVoteMessage('');
     try {
       await axios.post(
-        `http://localhost:5000/api/polls/vote/${pollId}/${optionIndex}`,
+  `${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/vote/${pollId}/${optionIndex}`,
         { userId },
         {
           headers: {

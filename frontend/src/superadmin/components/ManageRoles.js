@@ -62,7 +62,7 @@ const ManageRoles = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/users', {
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsers(res.data);
@@ -84,7 +84,7 @@ const ManageRoles = () => {
     const newRole = selectedRoles[id];
     try {
       await axios.put(
-        `http://localhost:5000/api/users/${id}/role`,
+  `${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/users/${id}/role`,
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );

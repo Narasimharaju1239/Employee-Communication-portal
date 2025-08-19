@@ -6,19 +6,19 @@ const PollList = () => {
   const [polls, setPolls] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/polls/all").then(res => setPolls(res.data));
+  axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/all`).then(res => setPolls(res.data));
   }, []);
 
   const handleVote = async (pollId, optionIndex) => {
     try {
-      await axios.post(`http://localhost:5000/api/polls/vote/${pollId}/${optionIndex}`, {}, {
+  await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/vote/${pollId}/${optionIndex}`, {}, {
         headers: {
           role: localStorage.getItem("role"),
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       });
       alert("Vote recorded!");
-      const res = await axios.get("http://localhost:5000/api/polls/all");
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/all`);
       setPolls(res.data);
     } catch (err) {
       alert(err.response?.data?.error || "Error voting");

@@ -10,12 +10,12 @@ const AdminCalendar = () => {
   const [desc, setDesc] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/calendar/all').then(res => setEvents(res.data));
+  axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/all`).then(res => setEvents(res.data));
   }, []);
 
   const handleCreateEvent = async () => {
     const createdBy = localStorage.getItem('userId');
-    await axios.post('http://localhost:5000/api/calendar/create', {
+  await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/create`, {
       title,
       description: desc,
       date: selectedDate,
@@ -23,7 +23,7 @@ const AdminCalendar = () => {
     });
     setTitle('');
     setDesc('');
-    const res = await axios.get('http://localhost:5000/api/calendar/all');
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/calendar/all`);
     setEvents(res.data);
   };
 

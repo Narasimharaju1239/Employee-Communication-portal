@@ -17,7 +17,7 @@ const PollCreate = () => {
     e.preventDefault();
     const createdBy = localStorage.getItem("userId");
     try {
-      await axios.post("http://localhost:5000/api/polls/create", {
+  await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/polls/create`, {
         question,
         options,
         createdBy

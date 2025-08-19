@@ -12,7 +12,7 @@ const RoomManager = () => {
 
   const fetchRooms = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/rooms', {
+  const res = await axios.get(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/rooms`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRooms(res.data);
@@ -24,7 +24,7 @@ const RoomManager = () => {
   const handleAddRoom = async () => {
     if (!roomName.trim()) return alert('Enter a room name');
     try {
-      await axios.post('http://localhost:5000/api/rooms', { name: roomName }, {
+  await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/rooms`, { name: roomName }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRoomName('');
@@ -36,7 +36,7 @@ const RoomManager = () => {
 
   const handleDeleteRoom = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/rooms/${id}`, {
+  await axios.delete(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/rooms/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchRooms();
