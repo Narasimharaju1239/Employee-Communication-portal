@@ -18,7 +18,10 @@ const app = express();
 // 🌍 Global Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3000"], // Frontend origin
+    origin: [
+      "http://localhost:3000",
+      "https://emoployeecommunicationportal.netlify.app"
+    ], // Allow local and Netlify frontend
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "role"],
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
@@ -79,8 +82,8 @@ app.get('*', (req, res) => {
 
 // 🚀 Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () =>
+  console.log(`🚀 Server running on port ${PORT}`)
 );
 
 // 📅 Date formatting utility (optional)
