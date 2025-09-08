@@ -8,11 +8,13 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+  // Removed duplicate handleSendOtp declaration
+  // Removed duplicate loading state declaration
   const [otpVerified, setOtpVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   // Step 1: Send OTP
@@ -20,15 +22,28 @@ const Signup = () => {
     e.preventDefault();
     setMessage('');
     setLoading(true);
+
+    // Frontend validation
+    if (!name.trim() || !email.trim()) {
+      setMessage('Name and Email are required.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/auth/send-signup-otp`, {
-        name,
-        email
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/auth/send-signup-otp`,
+        { name, email }
+      );
       setOtpSent(true);
       setMessage('OTP sent to your email. Please enter it below.');
     } catch (err) {
-      setMessage(err.response?.data?.message || 'Failed to send OTP.');
+      console.error('Send OTP error:', err); // Debugging
+      setMessage(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        'Failed to send OTP. Please check your email and try again.'
+      );
     }
     setLoading(false);
   };
@@ -39,7 +54,7 @@ const Signup = () => {
     setMessage('');
     setLoading(true);
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/auth/verify-signup-otp`, {
+      await axios.post(`${process.env.REACT_APP_API_URL || 'https://employee-communication-portal.onrender.com'}/api/auth/verify-signup-otp`, {
         email,
         otp
       });
