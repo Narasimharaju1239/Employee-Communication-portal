@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 
 const userSchema = new mongoose.Schema({
+  signupOtp: { type: String },
+  signupOtpExpires: { type: Date },
+  isOtpVerified: { type: Boolean },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   role: { type: String, enum: ["Employee", "Admin", "SuperAdmin", "NewUser", "employee", "admin", "superadmin", "newuser"], required: true },

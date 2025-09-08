@@ -1,3 +1,50 @@
+// --- OTP for Signup ---
+// ...existing code...
+// ...existing code...
+import { sendGenericEmail } from '../utils/email.js';
+
+export const sendSignupOtp = async (req, res) => {
+  const { email, name } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ msg: 'User already exists' });
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Store OTP and expiry in a temp user doc (or upsert)
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({ email, name, role: 'Employee', status: 'pending' });
+    }
+    user.signupOtp = otp;
+    user.signupOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    await user.save();
+    // Send OTP email
+    const subject = 'INCOR: Your Signup OTP';
+    const message = `<p>Your OTP for signup is:</p><div style="margin:24px 0;"><span style="display:inline-block;padding:12px 24px;background:#2563eb;color:#fff;border-radius:6px;font-weight:600;font-size:22px;letter-spacing:2px;">${otp}</span></div><p>This OTP is valid for 10 minutes. If you did not request this, please ignore this email.</p>`;
+    await sendGenericEmail(email, subject, message, { from: `"INCOR Notifications" <${process.env.EMAIL_USER}>` });
+    res.json({ message: 'OTP sent to your email' });
+  } catch (err) {
+    console.error('Signup OTP Error:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+export const verifySignupOtp = async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    const user = await User.findOne({ email, signupOtp: otp, signupOtpExpires: { $gt: Date.now() } });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+    user.signupOtp = undefined;
+    user.signupOtpExpires = undefined;
+    user.isOtpVerified = true;
+    await user.save();
+    res.json({ message: 'OTP verified. You can now set your password.' });
+  } catch (err) {
+    console.error('Verify Signup OTP Error:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
 // Image upload controller
 export const uploadProfileImage = async (req, res) => {
   try {
@@ -64,23 +111,26 @@ import Booking from '../models/Booking.js'; // <-- import Booking model
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { sendResetEmail, sendGenericEmail } from '../utils/email.js';
+// ...existing code...
 import { verifyCaptcha } from '../utils/verifyCaptcha.js';
 
 export const signup = async (req, res) => {
   const { email, password, name } = req.body;
   try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ msg: 'User already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Default role for signup is 'Employee', but status is 'pending' so SuperAdmin can approve
-    const user = new User({ email, name, password: hashedPassword, role: 'Employee', status: 'pending' });
+    // Only allow signup if OTP was verified
+    const user = await User.findOne({ email });
+    if (!user || !user.isOtpVerified) {
+      return res.status(400).json({ msg: 'OTP not verified for this email. Please verify OTP first.' });
+    }
+    if (user.password) {
+      return res.status(400).json({ msg: 'User already exists' });
+    }
+    user.name = name;
+    user.password = await bcrypt.hash(password, 10);
+    user.isOtpVerified = undefined;
     await user.save();
-
     // Send welcome email
     try {
-      const { sendBookingEmail } = await import('../utils/email.js');
       const subject = 'Welcome to INCOR!';
       const message = [
         `Dear ${user.name || user.email},`,
@@ -98,7 +148,6 @@ export const signup = async (req, res) => {
     } catch (mailErr) {
       console.error('Failed to send welcome email:', mailErr);
     }
-
     res.status(201).json({ msg: 'Signup successful' });
   } catch (err) {
     res.status(500).json({ msg: 'Server error', error: err.message });

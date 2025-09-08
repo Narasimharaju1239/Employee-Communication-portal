@@ -1,12 +1,15 @@
 // server/routes/authRoutes.js
 import express from 'express';
 
-import { login, signup, changePassword, forgotPassword, resetPassword, getProfile, uploadProfileImage, forgotPasswordLink } from '../controllers/authController.js';
+import { login, signup, changePassword, forgotPassword, resetPassword, getProfile, uploadProfileImage, forgotPasswordLink, sendSignupOtp, verifySignupOtp } from '../controllers/authController.js';
 import upload from '../middleware/upload.js';
 import { protect } from '../middleware/authMiddleware.js';
 
-
 const router = express.Router();
+
+// Signup OTP endpoints
+router.post('/send-signup-otp', sendSignupOtp);
+router.post('/verify-signup-otp', verifySignupOtp);
 // Get current user profile
 
 // Get current user profile

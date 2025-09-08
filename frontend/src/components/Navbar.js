@@ -27,12 +27,12 @@ const Navbar = () => {
       alignItems: 'center',
       height: '72px', // Increased navbar height
       boxShadow: '0 2px 12px rgba(25, 118, 210, 0.08)',
-      position: 'sticky',
+  position: 'fixed',
       top: 0,
       zIndex: 1000,
       letterSpacing: '0.5px',
       minWidth: 0,
-      overflow: 'hidden',
+      overflow: 'hidden', // Ensure no scroll
       boxSizing: 'border-box'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
